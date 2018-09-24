@@ -45,7 +45,10 @@ RUN cd / &&\
     apt-get clean &&\
     rm -f /etc/apt/apt.conf.d/40proxy &&\
     locale-gen en_US &&\
-    apt-get install -y nodejs &&\
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - &&\
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list &&\
+    apt-get update &&\
+    apt-get install -y nodejs yarn &&\
     npm install -g uglify-js@"<3" &&\
     npm install -g svgo
 
@@ -139,4 +142,5 @@ RUN useradd discourse -s /bin/bash -m -U &&\
     cd /var/www/discourse &&\
     sudo -u discourse bundle install --deployment \
          --without test --without development &&\
+    yarn install &&\
     find /var/www/discourse/vendor/bundle -name tmp -type d -exec rm -rf {} +
