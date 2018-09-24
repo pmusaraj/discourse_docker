@@ -49,8 +49,8 @@ RUN cd / &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list &&\
     apt-get update &&\
     apt-get install -y nodejs yarn &&\
-    npm install -g uglify-js@"<3" &&\
-    npm install -g svgo
+    yarn install global uglify-js@"<3" &&\
+    yarn install global svgo
 
 ADD install-nginx /tmp/install-nginx
 RUN /tmp/install-nginx
@@ -135,12 +135,12 @@ ADD cron.d_anacron /etc/cron.d/anacron
 RUN useradd discourse -s /bin/bash -m -U &&\
     mkdir -p /var/www &&\
     cd /var/www &&\
-    git clone https://github.com/discourse/discourse.git &&\
+    git clone https://github.com/pmusaraj/discourse.git &&\
     cd discourse &&\
-    git remote set-branches --add origin tests-passed &&\
+    git remote set-branches --add origin package-manager-exp-offline-mirror &&\
     chown -R discourse:discourse /var/www/discourse &&\
     cd /var/www/discourse &&\
     sudo -u discourse bundle install --deployment \
          --without test --without development &&\
-    yarn install &&\
+    yarn install --production --offline &&\
     find /var/www/discourse/vendor/bundle -name tmp -type d -exec rm -rf {} +
